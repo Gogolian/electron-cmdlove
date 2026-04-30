@@ -2,7 +2,8 @@ const { app, Tray, Menu } = require('electron')
 const { spawn } = require('child_process')
 const path = require('path')
 
-const CONEMU_PATH = 'C:\\Program Files\\ConEmu\\ConEmu64.exe'
+const DEFAULT_CONEMU_PATH = 'C:\\Program Files\\ConEmu\\ConEmu64.exe'
+const CONEMU_PATH = process.env.CMDLOVE_CONEMU_PATH || DEFAULT_CONEMU_PATH
 const ICON_PATH = path.join(__dirname, 'user.ico')
 const RUN_IN_CMD = ['-run', 'cmd', '/k', '-cur_console:']
 const SPAWN_OPTIONS = {
@@ -46,7 +47,9 @@ function createMenuItem(menuItem) {
   if (menuItem.quit) return { role: 'quit' }
   if (menuItem.separator) return { type: 'separator' }
 
-  const label = menuItem.text || menuItem.cmd || menuItem.task || 'No Name'
+  const label = menuItem.text || menuItem.cmd || menuItem.task
+  if (!label) throw new Error('Menu item must define text, cmd, or task')
+
   const command = getCommand(menuItem)
 
   return {
