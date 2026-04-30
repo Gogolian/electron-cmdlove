@@ -1,20 +1,63 @@
 {
   "name": "cmdlove",
-  "version": "1.0.0",
-  "description": "Start your favorite ConEmu tasks (or commands) from Taksbar",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron ."
+  "version": "2.0.0",
+  "description": "A configurable Windows tray launcher for terminal commands and tasks.",
+  "main": "dist/main/index.js",
+  "author": "Gogolian",
+  "license": "CC0-1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gogolian/electron-cmdlove.git"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
     "cmdlove",
-    "ConEmu",
-    "Electron"
+    "tray",
+    "terminal",
+    "commands",
+    "electron"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "start": "npm run build && electron .",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "format": "prettier --check .",
+    "format:write": "prettier --write .",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "validate": "npm run lint && npm run typecheck && npm test && npm run build",
+    "dist": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "io.github.gogolian.cmdlove",
+    "productName": "CmdLove",
+    "files": [
+      "dist/**/*",
+      "user.ico",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "user.ico"
+    }
+  },
   "devDependencies": {
-    "electron": "^5.0.5"
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.6.0",
+    "electron": "^41.3.0",
+    "electron-builder": "^26.8.1",
+    "eslint": "^10.2.1",
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.1",
+    "vitest": "^4.1.5"
   }
 }
