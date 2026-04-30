@@ -40,7 +40,7 @@ function getCommand(menuItem) {
 }
 
 function runConEmu(command) {
-  spawn(CONEMU_PATH, command, SPAWN_OPTIONS)
+  spawn(CONEMU_PATH, command, SPAWN_OPTIONS).unref()
 }
 
 function createMenuItem(menuItem) {
@@ -49,7 +49,7 @@ function createMenuItem(menuItem) {
 
   const label = menuItem.text || menuItem.cmd || menuItem.task
   const command = getCommand(menuItem)
-  if (!label || !command) throw new Error('Menu item must define a label and a command or task')
+  if (!label || !command) throw new Error('Menu item must define both a label and either a command or task')
 
   return {
     label,
