@@ -21,14 +21,15 @@
   },
   "scripts": {
     "start": "npm run build && electron .",
-    "build": "tsc -p tsconfig.json",
+    "build": "npm run clean && tsc -p tsconfig.json",
     "lint": "eslint .",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
-    "test": "vitest run",
+    "test": "npm run clean && vitest run test",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "validate": "npm run lint && npm run typecheck && npm test && npm run build",
-    "dist": "npm run build && electron-builder"
+    "dist": "npm run build && electron-builder",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\""
   },
   "build": {
     "appId": "io.github.gogolian.cmdlove",

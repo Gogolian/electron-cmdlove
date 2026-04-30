@@ -73,5 +73,7 @@ function buildMenuItem(
 
 function truncateLabel(label: string): string {
   const maxLength = 90;
-  return label.length > maxLength ? `${label.slice(0, maxLength - 1)}…` : label;
+  return label.length > maxLength
+    ? `${label.slice(0, maxLength - 3)}...`
+    : label;
 }
