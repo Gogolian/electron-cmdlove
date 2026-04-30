@@ -38,9 +38,17 @@ export function loadConfig(paths: ConfigPaths): ConfigLoadResult {
 
 export function writeDefaultConfig(configPath: string): void {
   mkdirSync(path.dirname(configPath), { recursive: true });
-  writeFileSync(`${configPath}.example`, `${JSON.stringify(defaultConfig, null, 2)}\n`, 'utf8');
+  writeFileSync(
+    `${configPath}.example`,
+    `${JSON.stringify(defaultConfig, null, 2)}\n`,
+    'utf8',
+  );
   if (!existsSync(configPath)) {
-    writeFileSync(configPath, `${JSON.stringify(defaultConfig, null, 2)}\n`, 'utf8');
+    writeFileSync(
+      configPath,
+      `${JSON.stringify(defaultConfig, null, 2)}\n`,
+      'utf8',
+    );
   }
 }
 

@@ -21,10 +21,13 @@ if (!singleInstanceLock) {
     showTrayBalloon('CmdLove is already running.');
   });
 
-  app.whenReady().then(startApplication).catch((error: unknown) => {
-    dialog.showErrorBox('CmdLove startup failed', formatError(error));
-    app.quit();
-  });
+  app
+    .whenReady()
+    .then(startApplication)
+    .catch((error: unknown) => {
+      dialog.showErrorBox('CmdLove startup failed', formatError(error));
+      app.quit();
+    });
 
   app.on('window-all-closed', () => {});
 }

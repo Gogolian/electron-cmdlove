@@ -14,7 +14,9 @@ const config: CmdLoveConfig = {
     {
       type: 'group',
       label: 'Group',
-      items: [{ type: 'command', id: 'child', label: 'Child', args: ['--child'] }],
+      items: [
+        { type: 'command', id: 'child', label: 'Child', args: ['--child'] },
+      ],
     },
   ],
 };

@@ -27,12 +27,22 @@ export function validateConfig(value: unknown): string[] {
 
   if (!isNonEmptyString(config.defaultTerminal)) {
     errors.push('defaultTerminal must be a non-empty string.');
-  } else if (isObject(config.terminals) && !config.terminals[config.defaultTerminal]) {
-    errors.push(`defaultTerminal "${config.defaultTerminal}" does not exist in terminals.`);
+  } else if (
+    isObject(config.terminals) &&
+    !config.terminals[config.defaultTerminal]
+  ) {
+    errors.push(
+      `defaultTerminal "${config.defaultTerminal}" does not exist in terminals.`,
+    );
   }
 
-  if (config.openOnTrayClick !== undefined && !isNonEmptyString(config.openOnTrayClick)) {
-    errors.push('openOnTrayClick must be a non-empty command id when provided.');
+  if (
+    config.openOnTrayClick !== undefined &&
+    !isNonEmptyString(config.openOnTrayClick)
+  ) {
+    errors.push(
+      'openOnTrayClick must be a non-empty command id when provided.',
+    );
   }
 
   if (!Array.isArray(config.menu)) {
@@ -42,14 +52,19 @@ export function validateConfig(value: unknown): string[] {
     validateMenu(config.menu, 'menu', config, errors, commandIds);
 
     if (config.openOnTrayClick && !commandIds.has(config.openOnTrayClick)) {
-      errors.push(`openOnTrayClick "${config.openOnTrayClick}" does not match a command id.`);
+      errors.push(
+        `openOnTrayClick "${config.openOnTrayClick}" does not match a command id.`,
+      );
     }
   }
 
   return errors;
 }
 
-function validateTerminals(config: Partial<CmdLoveConfig>, errors: string[]): void {
+function validateTerminals(
+  config: Partial<CmdLoveConfig>,
+  errors: string[],
+): void {
   if (!isObject(config.terminals)) {
     errors.push('terminals must be an object.');
     return;
@@ -63,7 +78,11 @@ function validateTerminals(config: Partial<CmdLoveConfig>, errors: string[]): vo
   }
 }
 
-function validateTerminal(value: unknown, path: string, errors: string[]): void {
+function validateTerminal(
+  value: unknown,
+  path: string,
+  errors: string[],
+): void {
   if (!isObject(value)) {
     errors.push(`${path} must be an object.`);
     return;
@@ -106,7 +125,13 @@ function validateMenu(
       if (!Array.isArray(item.items)) {
         errors.push(`${itemPath}.items must be an array.`);
       } else {
-        validateMenu(item.items, `${itemPath}.items`, config, errors, commandIds);
+        validateMenu(
+          item.items,
+          `${itemPath}.items`,
+          config,
+          errors,
+          commandIds,
+        );
       }
       return;
     }
@@ -139,7 +164,11 @@ function validateCommand(
     errors.push(`${path}.label must be a non-empty string.`);
   }
 
-  if (!isNonEmptyString(item.command) && !Array.isArray(item.args) && !isNonEmptyString(item.task)) {
+  if (
+    !isNonEmptyString(item.command) &&
+    !Array.isArray(item.args) &&
+    !isNonEmptyString(item.task)
+  ) {
     errors.push(`${path} must define command, args, or task.`);
   }
 
@@ -147,7 +176,9 @@ function validateCommand(
   if (!isNonEmptyString(terminalName)) {
     errors.push(`${path}.terminal must be a non-empty string when provided.`);
   } else if (isObject(config.terminals) && !config.terminals[terminalName]) {
-    errors.push(`${path}.terminal "${terminalName}" does not exist in terminals.`);
+    errors.push(
+      `${path}.terminal "${terminalName}" does not exist in terminals.`,
+    );
   }
 
   validateOptionalString(item.command, `${path}.command`, errors);
@@ -167,26 +198,44 @@ function validateCommand(
   }
 }
 
-function validateOptionalString(value: unknown, path: string, errors: string[]): void {
+function validateOptionalString(
+  value: unknown,
+  path: string,
+  errors: string[],
+): void {
   if (value !== undefined && typeof value !== 'string') {
     errors.push(`${path} must be a string.`);
   }
 }
 
-function validateOptionalStringArray(value: unknown, path: string, errors: string[]): void {
+function validateOptionalStringArray(
+  value: unknown,
+  path: string,
+  errors: string[],
+): void {
   if (value === undefined) {
     return;
   }
-  if (!Array.isArray(value) || value.some((entry) => typeof entry !== 'string')) {
+  if (
+    !Array.isArray(value) ||
+    value.some((entry) => typeof entry !== 'string')
+  ) {
     errors.push(`${path} must be an array of strings.`);
   }
 }
 
-function validateOptionalEnv(value: unknown, path: string, errors: string[]): void {
+function validateOptionalEnv(
+  value: unknown,
+  path: string,
+  errors: string[],
+): void {
   if (value === undefined) {
     return;
   }
-  if (!isObject(value) || Object.values(value).some((entry) => typeof entry !== 'string')) {
+  if (
+    !isObject(value) ||
+    Object.values(value).some((entry) => typeof entry !== 'string')
+  ) {
     errors.push(`${path} must be an object with string values.`);
   }
 }

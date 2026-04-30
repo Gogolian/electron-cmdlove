@@ -1,6 +1,10 @@
 import { spawn } from 'node:child_process';
 import type { Logger } from '../logging/logger.js';
-import type { CmdLoveConfig, CommandMenuItem, TerminalProfile } from '../config/types.js';
+import type {
+  CmdLoveConfig,
+  CommandMenuItem,
+  TerminalProfile,
+} from '../config/types.js';
 
 export interface LaunchPlan {
   executable: string;
@@ -16,7 +20,10 @@ export interface LaunchResult {
   plan?: LaunchPlan;
 }
 
-export function createLaunchPlan(config: CmdLoveConfig, command: CommandMenuItem): LaunchPlan {
+export function createLaunchPlan(
+  config: CmdLoveConfig,
+  command: CommandMenuItem,
+): LaunchPlan {
   const terminalName = command.terminal ?? config.defaultTerminal;
   const terminal = config.terminals[terminalName];
 
@@ -25,7 +32,9 @@ export function createLaunchPlan(config: CmdLoveConfig, command: CommandMenuItem
   }
 
   if (command.runAsAdmin) {
-    throw new Error('runAsAdmin is reserved for a future signed Windows launcher integration.');
+    throw new Error(
+      'runAsAdmin is reserved for a future signed Windows launcher integration.',
+    );
   }
 
   const executable = terminal.executable ?? defaultExecutableFor(terminal);
@@ -51,7 +60,10 @@ export function launchCommand(
     plan = createLaunchPlan(config, command);
   } catch (error) {
     const launchError = toError(error);
-    logger.error(`Unable to create launch plan for ${command.id}.`, launchError);
+    logger.error(
+      `Unable to create launch plan for ${command.id}.`,
+      launchError,
+    );
     return { ok: false, error: launchError };
   }
 
@@ -65,7 +77,10 @@ export function launchCommand(
     });
 
     child.on('error', (error) => {
-      logger.error(`Unable to launch ${command.id} with ${plan.executable}.`, error);
+      logger.error(
+        `Unable to launch ${command.id} with ${plan.executable}.`,
+        error,
+      );
     });
 
     child.unref();
@@ -73,12 +88,18 @@ export function launchCommand(
     return { ok: true, plan };
   } catch (error) {
     const launchError = toError(error);
-    logger.error(`Unable to launch ${command.id} with ${plan.executable}.`, launchError);
+    logger.error(
+      `Unable to launch ${command.id} with ${plan.executable}.`,
+      launchError,
+    );
     return { ok: false, error: launchError, plan };
   }
 }
 
-export function findCommand(config: CmdLoveConfig, id: string): CommandMenuItem | undefined {
+export function findCommand(
+  config: CmdLoveConfig,
+  id: string,
+): CommandMenuItem | undefined {
   const stack = [...config.menu];
 
   while (stack.length > 0) {
@@ -97,7 +118,10 @@ export function findCommand(config: CmdLoveConfig, id: string): CommandMenuItem 
   return undefined;
 }
 
-function buildTerminalArgs(terminal: TerminalProfile, command: CommandMenuItem): string[] {
+function buildTerminalArgs(
+  terminal: TerminalProfile,
+  command: CommandMenuItem,
+): string[] {
   const baseArgs = terminal.args ?? [];
 
   if (command.args) {

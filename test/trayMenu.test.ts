@@ -10,7 +10,9 @@ const config: CmdLoveConfig = {
     {
       type: 'group',
       label: 'Group',
-      items: [{ type: 'command', id: 'two', label: 'Two', command: 'echo two' }],
+      items: [
+        { type: 'command', id: 'two', label: 'Two', command: 'echo two' },
+      ],
     },
   ],
 };
@@ -28,7 +30,9 @@ describe('tray menu generation', () => {
       },
     });
 
-    expect(template.map((item) => item.label ?? item.role ?? item.type)).toEqual([
+    expect(
+      template.map((item) => item.label ?? item.role ?? item.type),
+    ).toEqual([
       'One',
       'Group',
       'separator',
@@ -52,7 +56,10 @@ describe('tray menu generation', () => {
       },
     });
 
-    expect(template[0]).toMatchObject({ label: 'Config errors - using defaults', enabled: false });
+    expect(template[0]).toMatchObject({
+      label: 'Config errors - using defaults',
+      enabled: false,
+    });
     expect(template[1]).toMatchObject({
       label: 'menu[0].label must be a non-empty string.',
       enabled: false,

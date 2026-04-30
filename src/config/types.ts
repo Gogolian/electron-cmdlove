@@ -40,7 +40,10 @@ export interface GroupMenuItem {
   items: ConfigMenuItem[];
 }
 
-export type ConfigMenuItem = CommandMenuItem | SeparatorMenuItem | GroupMenuItem;
+export type ConfigMenuItem =
+  | CommandMenuItem
+  | SeparatorMenuItem
+  | GroupMenuItem;
 
 export interface CmdLoveConfig {
   terminals: Record<string, TerminalProfile>;

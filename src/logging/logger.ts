@@ -13,7 +13,11 @@ export function createLogger(userDataPath: string): Logger {
 
   const write = (level: string, message: string, error?: unknown): void => {
     const detail = error === undefined ? '' : ` ${formatError(error)}`;
-    appendFileSync(logPath, `${new Date().toISOString()} [${level}] ${message}${detail}\n`, 'utf8');
+    appendFileSync(
+      logPath,
+      `${new Date().toISOString()} [${level}] ${message}${detail}\n`,
+      'utf8',
+    );
   };
 
   return {

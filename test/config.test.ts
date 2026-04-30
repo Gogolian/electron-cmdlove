@@ -22,13 +22,19 @@ describe('config loading and validation', () => {
 
   it('falls back to defaults with clear validation errors', () => {
     const userDataPath = tempDir();
-    writeFileSync(path.join(userDataPath, 'config.json'), '{"menu": []}', 'utf8');
+    writeFileSync(
+      path.join(userDataPath, 'config.json'),
+      '{"menu": []}',
+      'utf8',
+    );
 
     const result = loadConfig({ userDataPath });
 
     expect(result.config.defaultTerminal).toBe('conemu');
     expect(result.errors).toContain('terminals must be an object.');
-    expect(result.errors).toContain('defaultTerminal must be a non-empty string.');
+    expect(result.errors).toContain(
+      'defaultTerminal must be a non-empty string.',
+    );
   });
 
   it('rejects unknown terminal references and duplicate command ids', () => {
@@ -37,11 +43,19 @@ describe('config loading and validation', () => {
       defaultTerminal: 'cmd',
       menu: [
         { type: 'command', id: 'one', label: 'One', command: 'echo one' },
-        { type: 'command', id: 'one', label: 'Two', terminal: 'missing', command: 'echo two' },
+        {
+          type: 'command',
+          id: 'one',
+          label: 'Two',
+          terminal: 'missing',
+          command: 'echo two',
+        },
       ],
     });
 
     expect(errors).toContain('menu[1].id "one" is duplicated.');
-    expect(errors).toContain('menu[1].terminal "missing" does not exist in terminals.');
+    expect(errors).toContain(
+      'menu[1].terminal "missing" does not exist in terminals.',
+    );
   });
 });
