@@ -33,7 +33,7 @@ const MENU_ITEMS = [
 let tray = null
 
 function getCommand(menuItem) {
-  if (menuItem.cmd) return [...RUN_IN_CMD, menuItem.cmd]
+  if (menuItem.cmd) return RUN_IN_CMD.concat(menuItem.cmd)
   if (menuItem.task) return ['-run', menuItem.task]
 
   return null
@@ -49,7 +49,7 @@ function createMenuItem(menuItem) {
 
   const label = menuItem.text || menuItem.cmd || menuItem.task
   const command = getCommand(menuItem)
-  if (!label || !command) throw new Error('Menu item must define both a label and either a command or task')
+  if (!label || !command) throw new Error('Action menu item must define both a label and either cmd or task')
 
   return {
     label,
