@@ -36,7 +36,7 @@ function getCommand(menuItem) {
   if (menuItem.cmd) return [...RUN_IN_CMD, menuItem.cmd]
   if (menuItem.task) return ['-run', menuItem.task]
 
-  return []
+  return null
 }
 
 function runConEmu(command) {
@@ -48,9 +48,8 @@ function createMenuItem(menuItem) {
   if (menuItem.separator) return { type: 'separator' }
 
   const label = menuItem.text || menuItem.cmd || menuItem.task
-  if (!label) throw new Error('Menu item must define text, cmd, or task')
-
   const command = getCommand(menuItem)
+  if (!label || !command) throw new Error('Menu item must define a label and a command or task')
 
   return {
     label,
