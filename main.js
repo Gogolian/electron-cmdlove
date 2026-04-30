@@ -1,88 +1,67 @@
-// Modules to control application life and create native browser window
 const { app, Tray, Menu } = require('electron')
-
-const { spawn, exec } = require('child_process');
-
-
+const { spawn } = require('child_process')
 const path = require('path')
 
-const iconpath = path.join(__dirname, 'user.ico')
+const DEFAULT_CONEMU_PATH = 'C:\\Program Files\\ConEmu\\ConEmu64.exe'
+const CONEMU_PATH = process.env.CMDLOVE_CONEMU_PATH || DEFAULT_CONEMU_PATH
+const ICON_PATH = path.join(__dirname, 'user.ico')
+const RUN_IN_CMD = ['-run', 'cmd', '/k', '-cur_console:']
+const SPAWN_OPTIONS = {
+  detached: true,
+  stdio: 'ignore'
+}
+
+const MENU_ITEMS = [
+  { separator: true },
+  { task: '{sam-api}' },
+  { task: '{sam-docker-compose-up}' },
+  { task: '{sam-docker-compose-down}' },
+  { cmd: 'docker ps -a' },
+  { separator: true },
+  {
+    text: 'Show ConEmu',
+    cmd: '-cur_console:n exit'
+  },
+  {
+    text: 'New Console',
+    cmd: '-new_console:echo "Welcome!"'
+  },
+  { separator: true },
+  { quit: true }
+]
 
 let tray = null
 
-app.on('ready', () =>{
+function getCommand(menuItem) {
+  if (menuItem.cmd) return RUN_IN_CMD.concat(menuItem.cmd)
+  if (menuItem.task) return ['-run', menuItem.task]
 
-  tray = new Tray(iconpath)
+  return null
+}
 
-  const conemu = "C:\\Program Files\\ConEmu\\ConEmu64.exe"
+function runConEmu(command) {
+  spawn(CONEMU_PATH, command, SPAWN_OPTIONS).unref()
+}
 
-  const runcmd = ['-run', 'cmd', '/k', '-cur_console:',]
+function createMenuItem(menuItem) {
+  if (menuItem.quit) return { role: 'quit' }
+  if (menuItem.separator) return { type: 'separator' }
 
-  const ops = {
-    detached: true,
-    stdio: 'ignore'
+  const label = menuItem.text || menuItem.cmd || menuItem.task
+  const command = getCommand(menuItem)
+  if (!label || !command) throw new Error('Action menu item must define a non-empty cmd or task')
+
+  return {
+    label,
+    click() {
+      runConEmu(command)
+    }
   }
+}
 
-  let separator = true, quit = true;
+app.on('ready', () => {
+  tray = new Tray(ICON_PATH)
+  tray.setContextMenu(Menu.buildFromTemplate(MENU_ITEMS.map(createMenuItem)))
 
-  const menu = [
-    {
-      separator
-    },
-    {
-      task: '{sam-api}'
-    },
-    {
-      task: '{sam-docker-compose-up}'
-    },
-    {
-      task: '{sam-docker-compose-down}'
-    },
-    {
-      cmd: 'docker ps -a'
-    },
-    {
-      separator
-    },
-    {
-      text: 'Show ConEmu',
-      cmd: '-cur_console:n exit'
-    },
-    {
-      text: 'New Console',
-      cmd: '-new_console:echo "Welcome!"'
-    },
-    {
-      separator
-    },
-    {
-      quit
-    }
-  ]
-
-
-  const contextMenu = Menu.buildFromTemplate(menu.map((mi)=>{
-
-    if(mi.quit) return { role: 'quit' }
-    if(mi.separator) return { type: 'separator' }
-
-    let label = mi.text || mi.cmd || mi.task || 'No Name';
-
-    let command = mi.cmd ? [...runcmd, mi.cmd] :  mi.task ? ['-run', mi.task] : [] 
-
-    return {
-        label,
-        click: function () {
-          spawn(conemu, command, ops)
-        }
-    }
-
-  }));
-
-  tray.setContextMenu(contextMenu)
-
-  tray.on('click', () => {
-    spawn(conemu, [...runcmd, '-cur_console:n exit'], ops)
-  })
-
+  tray.on('click', () => runConEmu([...RUN_IN_CMD, '-cur_console:n exit']))
 })
