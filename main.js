@@ -49,7 +49,7 @@ function createMenuItem(menuItem) {
 
   const label = menuItem.text || menuItem.cmd || menuItem.task
   const command = getCommand(menuItem)
-  if (!label || !command) throw new Error('Action menu item must define both a label and either cmd or task')
+  if (!label || !command) throw new Error('Action menu item must define a non-empty cmd or task')
 
   return {
     label,
